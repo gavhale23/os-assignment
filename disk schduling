@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int n, head, i, seek = 0;
+    int req[20];
+
+    printf("Enter number of disk requests: ");
+    scanf("%d", &n);
+
+    printf("Enter request queue:\n");
+    for(i = 0; i < n; i++)
+        scanf("%d", &req[i]);
+
+    printf("Enter initial head position: ");
+    scanf("%d", &head);
+
+    printf("\nOrder of Servicing\tSeek Time\n");
+
+    for(i = 0; i < n; i++) {
+        int diff = abs(req[i] - head);   // simplified
+        seek += diff;
+
+        printf("%d\t\t\t%d\n", req[i], diff);
+
+        head = req[i];
+    }
+
+    printf("\nTotal Seek Time: %d\n", seek);
+
+    return 0;
+}
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int n, head, i, j, seek = 0;
+    int req[20], visited[20] = {0};
+
+    printf("Enter number of disk requests: ");
+    scanf("%d", &n);
+
+    printf("Enter request queue:\n");
+    for(i = 0; i < n; i++)
+        scanf("%d", &req[i]);
+
+    printf("Enter initial head position: ");
+    scanf("%d", &head);
+
+    printf("\nOrder of Servicing\tSeek Time\n");
+
+    for(i = 0; i < n; i++) {
+        int min = 99999, pos = -1;
+
+        for(j = 0; j < n; j++) {
+            if(!visited[j]) {
+                int diff = abs(req[j] - head);   // cleaner
+                if(diff < min) {
+                    min = diff;
+                    pos = j;
+                }
+            }
+        }
+
+        if(pos == -1) break;  // safety check
+
+        visited[pos] = 1;
+        seek += min;
+printf("%d\t\t\t%d\n", req[pos], min);
+
+        
+        head = req[pos];
+    }
+
+    printf("\nTotal Seek Time: %d\n", seek);
+    return 0;
+}
+
+
