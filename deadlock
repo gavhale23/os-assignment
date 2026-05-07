@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+
+pthread_mutex_t lock1, lock2;
+
+void *thread1(void *arg) {
+    printf("Thread 1: Locking A\n");
+    pthread_mutex_lock(&lock1);
+
+    sleep(1);
+
+    printf("Thread 1: Waiting for B\n");
+    pthread_mutex_lock(&lock2);
+
+    printf("Thread 1: Done\n");
+
+    pthread_mutex_unlock(&lock2);
+    pthread_mutex_unlock(&lock1);
+    return NULL;
+}
+
+void *thread2(void *arg) {
+    printf("Thread 2: Locking B\n");
+    pthread_mutex_lock(&lock2);
+
+    sleep(1);
+
+    printf("Thread 2: Waiting for A\n");
+    pthread_mutex_lock(&lock1);
+
+    printf("Thread 2: Done\n");
+
+    pthread_mutex_unlock(&lock1);
+    pthread_mutex_unlock(&lock2);
+    return NULL;
+}
+
+int main() {
+    pthread_t t1, t2;
+
+    pthread_mutex_init(&lock1, NULL);
+    pthread_mutex_init(&lock2, NULL);
+
+    printf("Deadlock Example\n");
+
+    pthread_create(&t1, NULL, thread1, NULL);
+    pthread_create(&t2, NULL, thread2, NULL);
+
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    return 0;
+}
